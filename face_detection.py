@@ -6,8 +6,7 @@ import streamlit as st
 st.write("Hello! This is a Face Detection app using the Viola-Jones algorithm.")
 
 # Load the face cascade classifier
-face_cascade = cv2.CascadeClassifier(
-    r'C:\Users\ikram\PycharmProjects\ANN\haarcascade_frontalface_default .xml')
+face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
 # Global variable to control the detection loop
 is_running = False
