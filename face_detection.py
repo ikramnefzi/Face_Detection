@@ -1,24 +1,21 @@
 import os
 import cv2
 import streamlit as st
+import numpy as np
 
 # Print a greeting message
 st.write("Hello! This is a Face Detection app using the Viola-Jones algorithm.")
 
 # Load the face cascade classifier
-face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
+face_cascade = cv2.CascadeClassifier(cascade_path)
 
 
 # Function to detect faces
-def detect_faces(rectangle_color, save_images, min_neighbors, scale_factor):
-    # Load a test image
-    frame = cv2.imread('images.jpg')  # Assurez-vous de mettre le bon chemin vers l'image
-    if frame is None:
-        st.error("Image not found. Please check the path.")
-        return
-
+def detect_faces(frame, rectangle_color, save_images, min_neighbors, scale_factor):
     # Convert the frames to grayscale
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
     # Detect the faces using the face cascade classifier
     faces = face_cascade.detectMultiScale(gray, scaleFactor=scale_factor, minNeighbors=min_neighbors)
 
@@ -45,8 +42,8 @@ def detect_faces(rectangle_color, save_images, min_neighbors, scale_factor):
         st.write(f"Image saved: {save_path}")
 
 
+# Main app function
 def app():
-    # Add instructions to the Streamlit app interface
     st.title("Face Detection using Viola-Jones Algorithm")
     st.write("Press the 'Detect Faces' button to start detecting faces from a test image.")
     st.write("Adjust the parameters and color below to customize the detection.")
@@ -61,10 +58,22 @@ def app():
     min_neighbors = st.slider("minNeighbors", 1, 10, 5)
     scale_factor = st.slider("scaleFactor", 1.1, 2.0, 1.3)
 
+    # Add a file uploader for the user to provide an image
+    uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
+
     # Add a button to start detecting faces
     if st.button("Detect Faces"):
-        # Call the detect_faces function with the chosen parameters
-        detect_faces(rectangle_color, save_images, min_neighbors, scale_factor)
+        if uploaded_file is not None:
+            # Convert the uploaded file to a numpy array and decode it using OpenCV
+            file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
+            frame = cv2.imdecode(file_bytes, 1)
+
+            # Call the detect_faces function with the chosen parameters
+            detect_faces(frame, rectangle_color, save_images, min_neighbors, scale_factor)
+        else:
+            st.error("Please upload an image to proceed with face detection.")
 
 
+# Run the app
 app()
+
