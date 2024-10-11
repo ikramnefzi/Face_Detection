@@ -12,7 +12,7 @@ face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 # Function to detect faces
 def detect_faces(rectangle_color, save_images, min_neighbors, scale_factor):
     # Load a test image
-    frame = cv2.imread('path_to_your_test_image.jpg')  # Assurez-vous de mettre le bon chemin vers l'image
+    frame = cv2.imread('images.jpg')  # Assurez-vous de mettre le bon chemin vers l'image
     if frame is None:
         st.error("Image not found. Please check the path.")
         return
